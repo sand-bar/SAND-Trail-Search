@@ -116,7 +116,7 @@ def findBestConstants(cipher, parameters):
                 if parameters["boolector"]:
                     result = solveBoolector(stp_file)
                 else:
-                    result = solveSTP(stp_file)
+                    result = solveSTP(stp_file, parameters["threads"])
 
                 # Check if a characteristic was found
                 if foundSolution(result):
@@ -157,7 +157,7 @@ def findMinWeightCharacteristic(cipher, parameters):
         if parameters["boolector"]:
             result = solveBoolector(stp_file)
         else:
-            result = solveSTP(stp_file)
+            result = solveSTP(stp_file, parameters["threads"])
 
         # Check if a characteristic was found
         if foundSolution(result):
@@ -186,10 +186,28 @@ def findMinWeightCharacteristic(cipher, parameters):
                     dot_file.write("}")
                 print("Wrote .dot to {}".format(parameters["dot"]))
                 
-            if parameters["latex"]:
-                with open(parameters["latex"], "w") as tex_file:
-                    tex_file.write(characteristic.getTexString())
-                print("Wrote .tex to {}".format(parameters["latex"]))                
+            if True: #parameters["latex"]:
+                dirs = "tmp/{}-wd{}".format(cipher.name, parameters["wordsize"])
+                if parameters["boolector"]:
+                    dirs += "-bool"
+                elif parameters["threads"] >= 1:
+                    dirs += "-smt"
+                else:
+                    dirs += "-stp"
+                if not os.path.exists(dirs):
+                    os.makedirs(dirs)
+
+                tex_file = dirs + "/{0}-wd{1}-{2}r-{3}weight.tex".format(
+                                         cipher.name,
+                                         parameters["wordsize"],
+                                         parameters["rounds"],
+                                         parameters["sweight"],
+                )
+                with open(tex_file, "w") as tex:
+                    for i in parameters:
+                        tex.write("%%% {}: {}\n".format(i, parameters[i]))
+                    tex.write(characteristic.getTexString())
+                print("Wrote .tex to {}".format(tex_file))
             break
         parameters["sweight"] += 1
     return parameters["sweight"]
@@ -215,7 +233,7 @@ def findAllCharacteristics(cipher, parameters):
         if parameters["boolector"]:
             result = solveBoolector(stp_file)
         else:
-            result = solveSTP(stp_file)
+            result = solveSTP(stp_file, parameters["threads"])
 
         # Check for solution
         if foundSolution(result):
@@ -262,11 +280,33 @@ def searchCharacteristics(cipher, parameters):
     Searches for differential characteristics of minimal weight
     for an increasing number of rounds.
     """
-    rec_file = "tmp/AllRounds-{}-{}rto{}r-{}wd.txt".format(
-                                     cipher.name,
-                                     parameters["rounds"],
-                                     parameters["endrounds"],
-                                     parameters["wordsize"],)
+    dirs = "tmp/{}-wd{}".format(cipher.name, parameters["wordsize"])
+    if parameters["boolector"]:
+        dirs += "-bool"
+    elif parameters["threads"] >= 1:
+        dirs += "-smt"
+    else:
+        dirs += "-stp"
+
+    if not os.path.exists(dirs):
+        os.makedirs(dirs)
+
+    if parameters["boolector"]:
+        rec_file = dirs + "/AllRounds-{}-wd{}-{}rto{}r-boolector.txt".format(
+                                         cipher.name,
+                                         parameters["wordsize"],
+                                         parameters["rounds"],
+                                         parameters["endrounds"],
+        )
+    else:
+        rec_file = dirs + "/AllRounds-{}-wd{}-{}rto{}r-th{}.txt".format(
+                                         cipher.name,
+                                         parameters["wordsize"],
+                                         parameters["rounds"],
+                                         parameters["endrounds"],
+                                         parameters["threads"],
+        )
+
     start_time = time.time()
     with open(rec_file, "w") as rec_file:
         try:
@@ -281,10 +321,10 @@ def searchCharacteristics(cipher, parameters):
                 parameters["sweight"] = findMinWeightCharacteristic(
                         cipher, parameters)
                 b_time = time.time() - a_time
-                print("current round time cost: %.2f s\n" % b_time)
+                print("current round time cost: %8.2f s\n" % b_time)
                 sys.stdout.flush()
                 rec_file.write("%2d" % parameters["sweight"])
-                rec_file.write(" (%.2f s)\n" % b_time)
+                rec_file.write(" (%8.2f s)\n" % b_time)
                 rec_file.flush()
 
                 if parameters["endrounds"] == parameters["rounds"]:
@@ -292,7 +332,7 @@ def searchCharacteristics(cipher, parameters):
                 parameters["rounds"] = parameters["rounds"] + 1
         finally:
             dura_time = time.time() - start_time
-            time_cost = "total time cost: %.2f s\n" % dura_time
+            time_cost = "total: %8.2f s\n" % dura_time
             print(time_cost)
             rec_file.write(time_cost)
     return
@@ -335,11 +375,16 @@ def startSATsolver(stp_file):
 
     return sat_process
 
-def solveSTP(stp_file):
+def solveSTP(stp_file, threads=0):
     """
     Returns the solution for the given SMT problem using STP.
+    if given threads number (at least >=1), then use cryptominisat.
     """
     stp_parameters = [PATH_STP, stp_file, "--CVC"]
+    if threads >= 1:
+        stp_parameters = [PATH_STP, stp_file,
+                          "--CVC", "--cryptominisat",
+                          "--threads", str(threads)]
     result = subprocess.check_output(stp_parameters)
 
     return result.decode("utf-8")

@@ -9,7 +9,9 @@ from ciphers import (simon, speck, simonlinear, keccak, keccakdiff,
                      siphash, simonrk, chaskeymachalf, simonkeyrc,
                      ketje, ascon, salsa, chacha, skinny, gimli,
                      present, craft, trifle, trifle, triflerk,
-                     bat_diff_pattern, bat_diff_actsbox)
+                     bat_diff_pattern, bat_diff_actsbox,
+                     bat_linear_actsbox,
+                    )
 from config import PATH_STP, PATH_CRYPTOMINISAT, PATH_BOOLECTOR
 
 from argparse import ArgumentParser, RawTextHelpFormatter
@@ -44,6 +46,7 @@ def startsearch(tool_parameters):
                     "triflerk" : triflerk.TrifleRK(),
                     "bat_diff_pattern" : bat_diff_pattern.Cipher(),
                     "bat_diff_actsbox" : bat_diff_actsbox.Cipher(),
+                    "bat_linear_actsbox" : bat_linear_actsbox.Cipher(),
     }
 
     cipher = None
@@ -99,6 +102,7 @@ def loadparameters(args):
     params = {"cipher" : "simon",
               "rounds" : 5,
               "endrounds" : None,
+              "threads" : 0,
               "mode" : 0,
               "wordsize" : 16,
               "blocksize" : 64,
@@ -169,6 +173,9 @@ def loadparameters(args):
     if args.latex:
         params["latex"] = args.latex[0]
 
+    if args.threads:
+        params["threads"] = args.threads[0]
+
     return params
 
 
@@ -215,6 +222,9 @@ def main():
                                                      "read the parameters.")
     parser.add_argument('--dot', nargs=1, help="Print the trail in .dot format.")
     parser.add_argument('--latex', nargs=1, help="Print the trail in .tex format.")
+    parser.add_argument('--threads', nargs=1, type=int,
+                        help="the number of used threads for cryptominisat.")
+
 
     # Parse command line arguments and construct parameter list.
     args = parser.parse_args()
