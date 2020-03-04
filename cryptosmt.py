@@ -8,7 +8,8 @@ from cryptanalysis import search
 from ciphers import (simon, speck, simonlinear, keccak, keccakdiff,
                      siphash, simonrk, chaskeymachalf, simonkeyrc,
                      ketje, ascon, salsa, chacha, skinny, gimli,
-                     present, craft, trifle, trifle, triflerk)
+                     present, craft, trifle, trifle, triflerk,
+                     bat_diff_pattern, bat_diff_actsbox)
 from config import PATH_STP, PATH_CRYPTOMINISAT, PATH_BOOLECTOR
 
 from argparse import ArgumentParser, RawTextHelpFormatter
@@ -40,7 +41,10 @@ def startsearch(tool_parameters):
                     "present" : present.PresentCipher(),
                     "craft" : craft.CraftCipher(),                    
                     "trifle" : trifle.TrifleCipher(),
-                    "triflerk" : triflerk.TrifleRK()}
+                    "triflerk" : triflerk.TrifleRK(),
+                    "bat_diff_pattern" : bat_diff_pattern.Cipher(),
+                    "bat_diff_actsbox" : bat_diff_actsbox.Cipher(),
+    }
 
     cipher = None
 
@@ -94,6 +98,7 @@ def loadparameters(args):
     # Load default values
     params = {"cipher" : "simon",
               "rounds" : 5,
+              "endrounds" : None,
               "mode" : 0,
               "wordsize" : 16,
               "blocksize" : 64,
@@ -126,6 +131,10 @@ def loadparameters(args):
 
     if args.rounds:
         params["rounds"] = args.rounds[0]
+
+    if args.endrounds:
+        params["endrounds"] = args.endrounds[0]
+
 
     if args.wordsize:
         params["wordsize"] = args.wordsize[0]
@@ -180,6 +189,8 @@ def main():
                         help="Stop search after reaching endweight.")    
     parser.add_argument('--rounds', nargs=1, type=int,
                         help="The number of rounds for the cipher")
+    parser.add_argument('--endrounds', nargs=1, type=int,
+                        help="The number of end rounds for the cipher")
     parser.add_argument('--wordsize', nargs=1, type=int,
                         help="Wordsize used for the cipher.")
     parser.add_argument('--blocksize', nargs=1, type=int,

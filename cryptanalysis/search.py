@@ -265,6 +265,8 @@ def searchCharacteristics(cipher, parameters):
         print("Number of rounds: {}".format(parameters["rounds"]))
         parameters["sweight"] = findMinWeightCharacteristic(cipher, parameters)
         print("Rounds:")
+        if parameters["endrounds"] == parameters["rounds"]:
+            break
         parameters["rounds"] = parameters["rounds"] + 1
     return
 
