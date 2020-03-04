@@ -13,6 +13,7 @@ import random
 import math
 import os
 import time
+import sys
 
 from fractions import gcd
 
@@ -261,13 +262,39 @@ def searchCharacteristics(cipher, parameters):
     Searches for differential characteristics of minimal weight
     for an increasing number of rounds.
     """
-    while True:
-        print("Number of rounds: {}".format(parameters["rounds"]))
-        parameters["sweight"] = findMinWeightCharacteristic(cipher, parameters)
-        print("Rounds:")
-        if parameters["endrounds"] == parameters["rounds"]:
-            break
-        parameters["rounds"] = parameters["rounds"] + 1
+    rec_file = "tmp/AllRounds-{}-{}rto{}r-{}wd.txt".format(
+                                     cipher.name,
+                                     parameters["rounds"],
+                                     parameters["endrounds"],
+                                     parameters["wordsize"],)
+    start_time = time.time()
+    with open(rec_file, "w") as rec_file:
+        try:
+            while True:
+                nr = "R {:2d}r: ".format(parameters["rounds"])
+                print(nr)
+                sys.stdout.flush()
+                rec_file.write(nr)
+                rec_file.flush()
+
+                a_time = time.time()
+                parameters["sweight"] = findMinWeightCharacteristic(
+                        cipher, parameters)
+                b_time = time.time() - a_time
+                print("current round time cost: %.2f s\n" % b_time)
+                sys.stdout.flush()
+                rec_file.write("%2d" % parameters["sweight"])
+                rec_file.write(" (%.2f s)\n" % b_time)
+                rec_file.flush()
+
+                if parameters["endrounds"] == parameters["rounds"]:
+                    break
+                parameters["rounds"] = parameters["rounds"] + 1
+        finally:
+            dura_time = time.time() - start_time
+            time_cost = "total time cost: %.2f s\n" % dura_time
+            print(time_cost)
+            rec_file.write(time_cost)
     return
 
 def reachedTimelimit(start_time, timelimit):
