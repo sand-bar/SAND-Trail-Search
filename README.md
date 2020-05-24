@@ -30,6 +30,7 @@ The following primitives are supported by CryptoSMT at the moment:
 * Cham[13],
 * CRAFT[21],
 * TRIFLE[22]
+* BAT[23]
 
 ###### Hash Functions
 * Keccak[14]
@@ -77,46 +78,46 @@ which gives you a ready to use setup of CryptoSMT.
 ## Usage
 
 As an example we will look at how CryptoSMT can be used to find the optimal
-differential characteristics for the block cipher Simon.
+differential characteristics from round 1 to 16 for the block cipher BAT-64 under looser pattern model.
 
 Running the command
     
-    $ python3 cryptosmt.py --cipher simon --rounds 8 --wordsize 16
+    $ python3 cryptosmt.py --cipher bat_diff_pattern --round 1 --endrounds 16 --mode 1 --wordsize 32
     
 will start the search for the optimal trail and you will see as output
 
-    simon - Rounds: 8 Wordsize: 16
-    ---
-    Weight: 0 Time: 0.0s
-    Weight: 1 Time: 0.08s
-    Weight: 2 Time: 0.16s
-    Weight: 3 Time: 0.44s
-    Weight: 4 Time: 0.74s
-    Weight: 5 Time: 0.89s
-    ...
-          
+```
+R  1r:
+Starting search for characteristic with minimal weight
+bat_diff_pattern - Rounds: 1 Wordsize: 32
+---
+Weight: 0 Time: 0.0s
+---
+```
+
 CryptoSMT tries to find a differential trail with a given weight `w_i`. 
 If no such trail exists `w_i` is incremented and the search continues. 
-In this case the best trail has a weight of `18` and can be quickly 
+In this case the best trail has a weight of `0` and can be quickly 
 found:
 
-    Characteristic for simon - Rounds 8 - Wordsize 16 - Weight 18 - Time 13.15s
-    Rounds  x       y       w
-    -------------------------------
-    0       0x0040  0x0191  -2
-    1       0x0011  0x0040  -4
-    2       0x0004  0x0011  -2
-    3       0x0001  0x0004  -2
-    4       0x0000  0x0001  -0
-    5       0x0001  0x0000  -2
-    6       0x0004  0x0001  -2
-    7       0x0011  0x0004  -4
-    8       0x0040  0x0011  none
+```
+Characteristic for bat_diff_pattern - Rounds 1 - Wordsize 32 - Weight 0 - Time 0.01s
+Rounds  x       y       inG0    inG1    xorG    permG   sumw
+---------------------------------------------------------------
+0       0x00    0x01    0x00    0x00    0x00    0x00    0x0000
+1       0x01    0x00    none    none    none    none    none
 
-    Weight: 18
-          
+Weight: 0
+Wrote .tex to tmp/bat_diff_pattern-wd32-stp/bat_diff_pattern-wd32-1r-0weight.tex
+current round time cost:     0.01 s
+```
+    
 CryptoSMT prints out the difference in the two state words `x_i`, `y_i` 
-and the probability for the transition between two rounds `w_i`.
+, the probability for the transition between two rounds `sumw_i` and some other Intermediate variable.
+
+Similarly, the following command can be used to find the optimal linear characteristics from round 1 to 16 for the block cipher BAT-64 under active S-box model with detailed LAT.
+
+    $ time python3 cryptosmt.py --cipher bat_linear_actsbox --round 1 --endrounds 16 --mode 1 --wordsize 32
 
 ## Adding a cipher to the CryptoSMT's cipher suites
 
@@ -187,6 +188,7 @@ Special thanks to [Ralph Ankele](https://github.com/TheBananaMan) and [Hosein Ha
 
 [22] [TRIFLE](https://csrc.nist.gov/CSRC/media/Projects/Lightweight-Cryptography/documents/round-1/spec-doc/trifle-spec.pdf)
 
+[23] [BAT]()
 
 ## BibTex
 ```

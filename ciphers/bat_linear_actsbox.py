@@ -1,6 +1,6 @@
 '''
 Created on Mar 1, 2019
-@author: shawn chen
+@author: Shawn
 '''
 
 from parser import stpcommands
@@ -11,7 +11,7 @@ from ciphers import bat_lat
 class Cipher(AbstractCipher):
     """
     Represents the linear behaviour of BAT and can be used
-    to find differential characteristics for the given parameters.
+    to find linear characteristics for the given parameters.
     """
 
     name = "bat_linear_actsbox"
@@ -117,8 +117,7 @@ class Cipher(AbstractCipher):
                         bef_P, aft_P,
                         w, w_i_0, w_i_1, wordsize):
         """
-        Model for behaviour of one round
-
+        Model for linear behaviour of one round
         """
         command = ""
 
