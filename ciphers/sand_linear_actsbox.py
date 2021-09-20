@@ -6,15 +6,15 @@ Created on Mar 1, 2019
 from parser import stpcommands
 from ciphers.cipher import AbstractCipher
 from ciphers import GenPerm as GenPerm
-from ciphers import bat_lat
+from ciphers import ssb_lat
 
 class Cipher(AbstractCipher):
     """
-    Represents the linear behaviour of BAT and can be used
+    Represents the linear behaviour of sand and can be used
     to find linear characteristics for the given parameters.
     """
 
-    name = "bat_linear_actsbox"
+    name = "sand_linear_actsbox"
     rot_alpha = 0
     rot_beta = 4
     PERM = []
@@ -32,7 +32,7 @@ class Cipher(AbstractCipher):
 
     def createSTP(self, stp_filename, parameters):
         """
-        Creates an STP file to find a characteristic for BAT nibble with
+        Creates an STP file to find a characteristic for sand nibble with
         the given parameters.
         """
 
@@ -48,7 +48,7 @@ class Cipher(AbstractCipher):
         self.PERM = GenPerm.GenNibblePerms(wordsize, p)
 
         with open(stp_filename, 'w') as stp_file:
-            header = ("% Input File for STP: BAT linear actsbox\n"
+            header = ("% Input File for STP: sand linear actsbox\n"
                       "% w = {} alpha = {} beta = {}\n"
                       "% rounds = {}\n\n".format(
                         wordsize,
@@ -182,7 +182,7 @@ class Cipher(AbstractCipher):
     def SBOX_ACT_ASSERT(self, stp_file):
         command = "S: ARRAY BITVECTOR(12) OF BITVECTOR(2);\n"
 
-        LDT = bat_lat.LAT
+        LDT = ssb_lat.LAT
         for a in range(16):
             for b in range(256):
                 t = abs(LDT[a][b])

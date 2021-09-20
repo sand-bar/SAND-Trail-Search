@@ -6,17 +6,17 @@ Created on Mar 1, 2019
 from parser import stpcommands
 from ciphers.cipher import AbstractCipher
 from ciphers import GenPerm as GenPerm
-from ciphers import bat_ddt
+from ciphers import ssb_ddt
 
 from parser.stpcommands import getStringLeftRotate as rotl
 
 class Cipher(AbstractCipher):
     """
-    Represents the differential behaviour of BAT and can be used
+    Represents the differential behaviour of sand and can be used
     to find differential characteristics for the given parameters.
     """
 
-    name = "bat_diff_actsbox"
+    name = "sand_diff_actsbox"
     rot_alpha = 0
     rot_beta = 4
     PERM = []
@@ -34,7 +34,7 @@ class Cipher(AbstractCipher):
 
     def createSTP(self, stp_filename, parameters):
         """
-        Creates an STP file to find a characteristic for BAT diff pattern with
+        Creates an STP file to find a characteristic for sand diff pattern with
         the given parameters.
         """
 
@@ -50,7 +50,7 @@ class Cipher(AbstractCipher):
         self.PERM = GenPerm.GenNibblePerms(wordsize, p)
 
         with open(stp_filename, 'w') as stp_file:
-            header = ("% Input File for STP: BAT diff actsbox\n"
+            header = ("% Input File for STP: sand diff actsbox\n"
                       "% w = {} alpha = {} beta = {}\n"
                       "% rounds = {}\n\n".format(
                         wordsize,
@@ -194,7 +194,7 @@ class Cipher(AbstractCipher):
     def SBOX_ACT_ASSERT(self, stp_file):
         command = "SBOX : ARRAY BITVECTOR(12) OF BITVECTOR(1);\n"
 
-        DDT = bat_ddt.DDT
+        DDT = ssb_ddt.DDT
         for i in range(16):
             for j in range(256):
                 if DDT[i][j] != 0:

@@ -11,11 +11,11 @@ from parser.stpcommands import getStringLeftRotate as rotl
 
 class Cipher(AbstractCipher):
     """
-    Represents the differential behaviour of BAT and can be used
+    Represents the differential behaviour of sand and can be used
     to find differential characteristics for the given parameters.
     """
 
-    name = "bat_diff_pattern"
+    name = "sand_diff_pattern"
     rot_alpha = 0
     rot_beta = 1
     PERM = []
@@ -32,7 +32,7 @@ class Cipher(AbstractCipher):
 
     def createSTP(self, stp_filename, parameters):
         """
-        Creates an STP file to find a characteristic for BAT diff pattern with
+        Creates an STP file to find a characteristic for sand diff pattern with
         the given parameters.
         """
 
@@ -47,7 +47,7 @@ class Cipher(AbstractCipher):
             raise Exception("Wrong wordsize!")
 
         with open(stp_filename, 'w') as stp_file:
-            header = ("% Input File for STP: BAT diff pattern\n"
+            header = ("% Input File for STP: sand diff pattern\n"
                       "% w = {} alpha = {} beta = {}\n"
                       "% rounds = {}\n\n".format(
                         wordsize,

@@ -30,7 +30,7 @@ The following primitives are supported by CryptoSMT at the moment:
 * Cham[13],
 * CRAFT[21],
 * TRIFLE[22]
-* BAT[23]
+* SAND[23]
 
 ###### Hash Functions
 * Keccak[14]
@@ -78,18 +78,18 @@ which gives you a ready to use setup of CryptoSMT.
 ## Usage
 
 As an example we will look at how CryptoSMT can be used to find the optimal
-differential characteristics from round 1 to 16 for the block cipher BAT-64 under looser pattern model.
+differential characteristics from round 1 to 16 for the block cipher sand-64 under looser pattern model.
 
 Running the command
     
-    $ python3 cryptosmt.py --cipher bat_diff_pattern --round 1 --endrounds 16 --mode 1 --wordsize 32
+    $ python3 cryptosmt.py --cipher sand_diff_pattern --round 1 --endrounds 16 --mode 1 --wordsize 32
     
 will start the search for the optimal trail and you will see as output
 
 ```
 R  1r:
 Starting search for characteristic with minimal weight
-bat_diff_pattern - Rounds: 1 Wordsize: 32
+sand_diff_pattern - Rounds: 1 Wordsize: 32
 ---
 Weight: 0 Time: 0.0s
 ---
@@ -101,23 +101,23 @@ In this case the best trail has a weight of `0` and can be quickly
 found:
 
 ```
-Characteristic for bat_diff_pattern - Rounds 1 - Wordsize 32 - Weight 0 - Time 0.01s
+Characteristic for sand_diff_pattern - Rounds 1 - Wordsize 32 - Weight 0 - Time 0.01s
 Rounds  x       y       inG0    inG1    xorG    permG   sumw
 ---------------------------------------------------------------
 0       0x00    0x01    0x00    0x00    0x00    0x00    0x0000
 1       0x01    0x00    none    none    none    none    none
 
 Weight: 0
-Wrote .tex to tmp/bat_diff_pattern-wd32-stp/bat_diff_pattern-wd32-1r-0weight.tex
+Wrote .tex to tmp/sand_diff_pattern-wd32-stp/sand_diff_pattern-wd32-1r-0weight.tex
 current round time cost:     0.01 s
 ```
     
 CryptoSMT prints out the difference in the two state words `x_i`, `y_i` 
 , the probability for the transition between two rounds `sumw_i` and some other Intermediate variable.
 
-Similarly, the following command can be used to find the optimal linear characteristics from round 1 to 16 for the block cipher BAT-64 under active S-box model with detailed LAT.
+Similarly, the following command can be used to find the optimal linear characteristics from round 1 to 16 for the block cipher sand-64 under active S-box model with detailed LAT.
 
-    $ time python3 cryptosmt.py --cipher bat_linear_actsbox --round 1 --endrounds 16 --mode 1 --wordsize 32
+    $ time python3 cryptosmt.py --cipher sand_linear_actsbox --round 1 --endrounds 16 --mode 1 --wordsize 32
 
 ## Adding a cipher to the CryptoSMT's cipher suites
 
@@ -188,7 +188,7 @@ Special thanks to [Ralph Ankele](https://github.com/TheBananaMan) and [Hosein Ha
 
 [22] [TRIFLE](https://csrc.nist.gov/CSRC/media/Projects/Lightweight-Cryptography/documents/round-1/spec-doc/trifle-spec.pdf)
 
-[23] [BAT]()
+[23] [SAND]()
 
 ## BibTex
 ```

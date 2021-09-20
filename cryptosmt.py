@@ -9,8 +9,8 @@ from ciphers import (simon, speck, simonlinear, keccak, keccakdiff,
                      siphash, simonrk, chaskeymachalf, simonkeyrc,
                      ketje, ascon, salsa, chacha, skinny, gimli,
                      present, craft, trifle, trifle, triflerk,
-                     bat_diff_pattern, bat_diff_actsbox,
-                     bat_linear_actsbox,
+                     sand_diff_pattern, sand_diff_actsbox,
+                     sand_linear_actsbox,
                     )
 from config import PATH_STP, PATH_CRYPTOMINISAT, PATH_BOOLECTOR
 
@@ -44,9 +44,9 @@ def startsearch(tool_parameters):
                     "craft" : craft.CraftCipher(),                    
                     "trifle" : trifle.TrifleCipher(),
                     "triflerk" : triflerk.TrifleRK(),
-                    "bat_diff_pattern" : bat_diff_pattern.Cipher(),
-                    "bat_diff_actsbox" : bat_diff_actsbox.Cipher(),
-                    "bat_linear_actsbox" : bat_linear_actsbox.Cipher(),
+                    "sand_diff_pattern" : sand_diff_pattern.Cipher(),
+                    "sand_diff_actsbox" : sand_diff_actsbox.Cipher(),
+                    "sand_linear_actsbox" : sand_linear_actsbox.Cipher(),
     }
 
     cipher = None
