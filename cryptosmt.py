@@ -7,11 +7,10 @@ Created on Mar 28, 2014
 from cryptanalysis import search
 from ciphers import (simon, speck, simonlinear, keccak, keccakdiff,
                      siphash, simonrk, chaskeymachalf, simonkeyrc,
-                     ketje, ascon, salsa, chacha, skinny, gimli,
-                     present, craft, trifle, trifle, triflerk,
-                     sand_diff_pattern, sand_diff_actsbox,
-                     sand_linear_actsbox,
-                    )
+                     ketje, ascon, salsa, chacha, skinny, skinnyrk, gimli,
+                     present, craft, craftlinear, trifle, trifle, triflerk,
+                     sand_diff_pattern, sand_diff_actsbox, sand_linear_actsbox)
+
 from config import PATH_STP, PATH_CRYPTOMINISAT, PATH_BOOLECTOR
 
 from argparse import ArgumentParser, RawTextHelpFormatter
@@ -39,9 +38,11 @@ def startsearch(tool_parameters):
                     "salsa" : salsa.SalsaCipher(),
                     "chacha" : chacha.ChaChaCipher(),
                     "skinny" : skinny.SkinnyCipher(),
+                    "skinnyrk" : skinnyrk.SkinnyRKCipher(),
                     "gimli" : gimli.GimliCipher(),
                     "present" : present.PresentCipher(),
-                    "craft" : craft.CraftCipher(),                    
+                    "craft" : craft.CraftCipher(),
+                    "craftlinear" : craftlinear.CraftCipherLinear(),                   
                     "trifle" : trifle.TrifleCipher(),
                     "triflerk" : triflerk.TrifleRK(),
                     "sand_diff_pattern" : sand_diff_pattern.Cipher(),
