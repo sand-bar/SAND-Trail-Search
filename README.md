@@ -188,7 +188,7 @@ Special thanks to [Ralph Ankele](https://github.com/TheBananaMan) and [Hosein Ha
 
 [22] [TRIFLE](https://csrc.nist.gov/CSRC/media/Projects/Lightweight-Cryptography/documents/round-1/spec-doc/trifle-spec.pdf)
 
-[23] [SAND]()
+[23] [SAND: SAND: an AND-RX Feistel lightweight block cipher supporting S-box-based security evaluations](https://link.springer.com/article/10.1007%2Fs10623-021-00970-9)
 
 ## BibTex
 ```
